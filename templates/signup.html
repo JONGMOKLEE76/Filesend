@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up - Logi-Sphere</title>
+    <style>
+        .avatar-img { width: 80px; height: 80px; object-fit: cover; margin: 5px; }
+        .avatar-list { display: flex; flex-wrap: wrap; justify-content: center; }
+    </style>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form id="signupForm" method="POST">
+        <label>Username: <input type="text" name="username" id="username" value="{{ request.args.get('username', '') }}"></label><br>
+        <label>Password: <input type="password" name="password" id="password" value="{{ request.args.get('password', '') }}"></label><br>
+        <label>Company Name: <input type="text" name="company" id="company" value="{{ request.args.get('company', '') }}"></label><br>
+        <label>Job Title: <input type="text" name="job" id="job" value="{{ request.args.get('job', '') }}"></label><br>
+        <label>Email Address: <input type="email" name="email" id="email" value="{{ request.args.get('email', '') }}" required></label><br>
+        <label>Select your character:</label><br>
+        <div class="avatar-list">
+            {% for avatar in avatars %}
+                <label>
+                    <input type="radio" name="avatar" value="{{ avatar }}" {% if loop.first %}checked{% endif %}>
+                    <img src="{{ url_for('static', filename='avatars/' ~ avatar) }}" class="avatar-img" alt="{{ avatar }}">
+                </label>
+            {% endfor %}
+        </div>
+        <button type="submit">Sign Up</button>
+    </form>
+    <div>
+        <a href="#" id="prevBtn" {% if page <= 1 %}style="display:none;"{% endif %}>Prev</a>
+        <a href="#" id="nextBtn" {% if page >= total_pages %}style="display:none;"{% endif %}>Next</a>
+    </div>
+    <a href="{{ url_for('index') }}">Home</a>
+    <script>
+    function buildUrl(page) {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const company = document.getElementById('company').value;
+        const job = document.getElementById('job').value;
+        const email = document.getElementById('email').value;
+        return `{{ url_for('signup') }}?page=${page}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&company=${encodeURIComponent(company)}&job=${encodeURIComponent(job)}&email=${encodeURIComponent(email)}`;
+    }
+
+    document.getElementById('prevBtn').onclick = function(e) {
+        e.preventDefault();
+        window.location.href = buildUrl({{ page - 1 }});
+    };
+    document.getElementById('nextBtn').onclick = function(e) {
+        e.preventDefault();
+        window.location.href = buildUrl({{ page + 1 }});
+    };
+    </script>
+</body>
+</html>

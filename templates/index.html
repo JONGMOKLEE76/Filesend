@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logi-Sphere</title>
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='main_image.jpg') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        .content {
+            background: rgba(255,255,255,0.8);
+            padding: 30px;
+            border-radius: 10px;
+            width: 500px;
+            margin: 60px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Logi-Sphere</h1>
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logi-Sphere Logo" width="200">
+        <br>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul>
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        {% if not session.get('username') %}
+            <a href="{{ url_for('login') }}"><button>Login</button></a>
+            <a href="{{ url_for('signup') }}"><button>Sign Up</button></a>
+        {% else %}
+            <a href="{{ url_for('logout') }}"><button>Logout</button></a>
+        {% endif %}
+        {% if session.get('is_admin', False) %}
+            <a href="{{ url_for('admin_users') }}"><button>User Management</button></a>
+        {% endif %}
+    </div>
+</body>
+</html>
